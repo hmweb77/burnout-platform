@@ -11,20 +11,21 @@ export default function ResultsPage() {
   const [results, setResults] = useState(null);
 
   useEffect(() => {
-    const responses = JSON.parse(localStorage.getItem('surveyResponses') || '{}');
+    const responses = JSON.parse(localStorage.getItem("surveyResponses") || "{}");
 
     const calculateCategoryResults = (startIndex, endIndex) => {
-      let never = 0, sometimes = 0, always = 0;
+      let never = 0, rarely = 0, often = 0, always = 0;
 
       for (let i = startIndex; i <= endIndex; i++) {
         const response = responses[`q${i}`];
         if (response === "1") never++;
-        else if (response === "3") sometimes++;
-        else if (response === "5") always++;
+        else if (response === "2") rarely++;
+        else if (response === "3") often++;
+        else if (response === "4") always++;
       }
 
-      const score = ((never * 1 + sometimes * 3 + always * 5) / (5 * 5)) * 100;
-      return { never, sometimes, always, score };
+      const score = ((never * 1 + rarely * 2 + often * 3 + always * 4) / (4 * 5)) * 100;
+      return { never, rarely, often, always, score };
     };
 
     const emotionsResults = calculateCategoryResults(1, 5);
@@ -34,9 +35,10 @@ export default function ResultsPage() {
 
     const overall = {
       never: emotionsResults.never + mindsetResults.never + lifestyleResults.never + workEnvironmentResults.never,
-      sometimes: emotionsResults.sometimes + mindsetResults.sometimes + lifestyleResults.sometimes + workEnvironmentResults.sometimes,
+      rarely: emotionsResults.rarely + mindsetResults.rarely + lifestyleResults.rarely + workEnvironmentResults.rarely,
+      often: emotionsResults.often + mindsetResults.often + lifestyleResults.often + workEnvironmentResults.often,
       always: emotionsResults.always + mindsetResults.always + lifestyleResults.always + workEnvironmentResults.always,
-      score: (emotionsResults.score + mindsetResults.score + lifestyleResults.score + workEnvironmentResults.score) / 4
+      score: (emotionsResults.score + mindsetResults.score + lifestyleResults.score + workEnvironmentResults.score) / 4,
     };
 
     setResults({
@@ -44,7 +46,7 @@ export default function ResultsPage() {
       mindset: mindsetResults,
       lifestyle: lifestyleResults,
       workEnvironment: workEnvironmentResults,
-      overall
+      overall,
     });
   }, []);
 
@@ -56,10 +58,10 @@ export default function ResultsPage() {
     { name: "Emotions", results: results.emotions, color: "from-red-500 to-orange-500" },
     { name: "Mindset", results: results.mindset, color: "from-blue-500 to-cyan-500" },
     { name: "Lifestyle", results: results.lifestyle, color: "from-green-500 to-emerald-500" },
-    { name: "Work Environment", results: results.workEnvironment, color: "from-purple-500 to-pink-500" }
+    { name: "Work Environment", results: results.workEnvironment, color: "from-purple-500 to-pink-500" },
   ];
 
-  const radarData = categories.map(category => ({
+  const radarData = categories.map((category) => ({
     category: category.name,
     score: category.results.score,
   }));
@@ -76,7 +78,7 @@ export default function ResultsPage() {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">Your Burnout Assessment Results</h1>
             <p className="text-gray-500 dark:text-gray-400">
-              Based on your responses, here's a detailed analysis of your well-being
+              Based on your responses, here's a detailed analysis of your well-being.
             </p>
           </div>
 
@@ -117,14 +119,18 @@ export default function ResultsPage() {
                     style={{ width: `${category.results.score}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="grid grid-cols-4 gap-4 text-center">
                   <div>
                     <div className="text-2xl font-bold">{category.results.never}</div>
                     <div className="text-sm text-gray-500">Never</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">{category.results.sometimes}</div>
-                    <div className="text-sm text-gray-500">Sometimes</div>
+                    <div className="text-2xl font-bold">{category.results.rarely}</div>
+                    <div className="text-sm text-gray-500">Rarely</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">{category.results.often}</div>
+                    <div className="text-sm text-gray-500">Often</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold">{category.results.always}</div>

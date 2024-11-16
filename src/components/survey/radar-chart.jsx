@@ -26,12 +26,8 @@ export default function BurnoutRadarChart({ data }) {
             <PolarGrid gridType="polygon" />
             <PolarAngleAxis
               dataKey="subject"
-              tick={{ fill: "hsl(var(--foreground))", fontSize: 14 }}
-            />
-            <PolarRadiusAxis
-              angle={90}
-              domain={[0, 100]}
-              tick={{ fill: "hsl(var(--foreground))" }}
+              tick={{ fill: "#FFFFFF", fontSize: 16 }}
+               
             />
             <Tooltip
               content={({ payload }) => {
@@ -49,8 +45,8 @@ export default function BurnoutRadarChart({ data }) {
             <Radar
               name="Score"
               dataKey="score"
-              stroke="hsl(var(--primary))"
-              fill="hsl(var(--primary))"
+              stroke="#4F46E5" 
+              fill="#4F46E5" 
               fillOpacity={0.3}
             />
           </RadarChart>
