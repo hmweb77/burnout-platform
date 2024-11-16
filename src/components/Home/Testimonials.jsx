@@ -55,7 +55,7 @@ const coaches = [
 
 export default function Testimonials() {
   return (
-    <section className="py-24 px-24 bg-gray-50 dark:bg-gray-900">
+    <section className="p-4 sm:p-24 bg-gray-50 dark:bg-gray-900">
       <div className="container px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function CallToAction() {
   return (
-    <section className="py-24 px-24">
+    <section className="p-4 sm:p-24">
       <div className="container px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

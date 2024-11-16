@@ -100,9 +100,9 @@ export default function SurveyForm({ onProgressChange }) {
                   transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
                   className="space-y-6"
                 >
-                  <h2 className="text-xl font-semibold capitalize mb-4">
+                  {/* <h2 className="text-xl font-semibold capitalize mb-4">
                     {category.replace(/([A-Z])/g, " $1").trim()}
-                  </h2>
+                  </h2> */}
                   {categoryQuestions.map((question, index) => {
                     const questionNumber = categoryIndex * 5 + index + 1;
                     const fieldName = `q${questionNumber}`;

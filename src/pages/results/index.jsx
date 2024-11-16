@@ -11,10 +11,15 @@ export default function ResultsPage() {
   const [results, setResults] = useState(null);
 
   useEffect(() => {
-    const responses = JSON.parse(localStorage.getItem("surveyResponses") || "{}");
+    const responses = JSON.parse(
+      localStorage.getItem("surveyResponses") || "{}"
+    );
 
     const calculateCategoryResults = (startIndex, endIndex) => {
-      let never = 0, rarely = 0, often = 0, always = 0;
+      let never = 0,
+        rarely = 0,
+        often = 0,
+        always = 0;
 
       for (let i = startIndex; i <= endIndex; i++) {
         const response = responses[`q${i}`];
@@ -24,7 +29,8 @@ export default function ResultsPage() {
         else if (response === "4") always++;
       }
 
-      const score = ((never * 1 + rarely * 2 + often * 3 + always * 4) / (4 * 5)) * 100;
+      const score =
+        ((never * 1 + rarely * 2 + often * 3 + always * 4) / (4 * 5)) * 100;
       return { never, rarely, often, always, score };
     };
 
@@ -34,11 +40,32 @@ export default function ResultsPage() {
     const workEnvironmentResults = calculateCategoryResults(16, 20);
 
     const overall = {
-      never: emotionsResults.never + mindsetResults.never + lifestyleResults.never + workEnvironmentResults.never,
-      rarely: emotionsResults.rarely + mindsetResults.rarely + lifestyleResults.rarely + workEnvironmentResults.rarely,
-      often: emotionsResults.often + mindsetResults.often + lifestyleResults.often + workEnvironmentResults.often,
-      always: emotionsResults.always + mindsetResults.always + lifestyleResults.always + workEnvironmentResults.always,
-      score: (emotionsResults.score + mindsetResults.score + lifestyleResults.score + workEnvironmentResults.score) / 4,
+      never:
+        emotionsResults.never +
+        mindsetResults.never +
+        lifestyleResults.never +
+        workEnvironmentResults.never,
+      rarely:
+        emotionsResults.rarely +
+        mindsetResults.rarely +
+        lifestyleResults.rarely +
+        workEnvironmentResults.rarely,
+      often:
+        emotionsResults.often +
+        mindsetResults.often +
+        lifestyleResults.often +
+        workEnvironmentResults.often,
+      always:
+        emotionsResults.always +
+        mindsetResults.always +
+        lifestyleResults.always +
+        workEnvironmentResults.always,
+      score:
+        (emotionsResults.score +
+          mindsetResults.score +
+          lifestyleResults.score +
+          workEnvironmentResults.score) /
+        4,
     };
 
     setResults({
@@ -55,10 +82,50 @@ export default function ResultsPage() {
   }
 
   const categories = [
-    { name: "Emotions", results: results.emotions, color: "from-red-500 to-orange-500" },
-    { name: "Mindset", results: results.mindset, color: "from-blue-500 to-cyan-500" },
-    { name: "Lifestyle", results: results.lifestyle, color: "from-green-500 to-emerald-500" },
-    { name: "Work Environment", results: results.workEnvironment, color: "from-purple-500 to-pink-500" },
+    {
+      name: "Emotions",
+      results: results.emotions,
+      color: "from-red-500 to-orange-500",
+      tips: [
+        "Practice gratitude journaling: Write down three things you're thankful for each day.",
+        "Practice deep breathing: Inhale for 4 seconds, hold for 7 seconds, and exhale for 8 seconds.",
+        "Engage in creative outlets like drawing, writing, or playing music to release stress.",
+      ],
+    },
+    {
+      name: "Mindset",
+      results: results.mindset,
+      color: "from-blue-500 to-cyan-500",
+      tips: [
+        "Reframe negative thoughts: Replace 'I can't do this' with 'I can try and learn from this.'",
+        "Set small, achievable goals: Break larger goals into smaller steps to boost confidence.",
+        "Focus on growth: Embrace challenges as learning opportunities to build resilience.",
+        "Celebrate small wins: Recognize even the smallest achievements to stay motivated.",
+      ],
+    },
+    {
+      name: "Lifestyle",
+      results: results.lifestyle,
+      color: "from-green-500 to-emerald-500",
+      tips: [
+        "Create a consistent bedtime routine: Go to bed and wake up at the same time daily.",
+        "Incorporate daily movement: Start with 10-minute morning activities like walking or stretching.",
+        "Add more vegetables and fruits to your meals: Fill half your plate with them.",
+        "Schedule check-ins with friends or family: Small efforts strengthen relationships.",
+      ],
+    },
+    {
+      name: "Work Environment",
+      results: results.workEnvironment,
+      color: "from-purple-500 to-pink-500",
+      tips: [
+        "Encourage open communication: Foster a culture of feedback and idea-sharing.",
+        "Declutter your workspace: Keep it organized to reduce stress and boost focus.",
+        "Celebrate successes: Acknowledge team achievements to build morale.",
+        "Promote work-life balance: Take breaks and use vacation time to recharge.",
+        "Organize team bonding: Host casual activities or online discussions for remote teams.",
+      ],
+    },
   ];
 
   const radarData = categories.map((category) => ({
@@ -76,9 +143,10 @@ export default function ResultsPage() {
           className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8"
         >
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">Your Burnout Assessment Results</h1>
+            <h1 className="text-3xl font-bold mb-2">Assessment Results</h1>
             <p className="text-gray-500 dark:text-gray-400">
-              Based on your responses, here's a detailed analysis of your well-being.
+              Based on your responses, here's a detailed analysis of your
+              well-being.
             </p>
           </div>
 
@@ -92,17 +160,24 @@ export default function ResultsPage() {
                 />
               </div>
               <div className="flex justify-between text-sm text-gray-500 mt-2">
-                <span>Low Risk</span>
-                <span>Moderate Risk</span>
                 <span>High Risk</span>
+                <span>Moderate Risk</span>
+                <span>Low Risk</span>
               </div>
+              <br></br>
+              <p>
+                Your overall score reflects your current risk level for burnout.
+                A higher score indicates lower risk and better resilience, while
+                a lower score suggests a higher likelihood of burnout. Take time
+                to reflect on the areas with lower scores and explore strategies
+                to improve your well-being and balance.
+              </p>
             </div>
           </div>
 
           <div className="mb-8">
             <BurnoutRadarChart data={radarData} />
           </div>
-
           <div className="grid gap-6 md:grid-cols-2 mb-8">
             {categories.map((category) => (
               <motion.div
@@ -119,24 +194,21 @@ export default function ResultsPage() {
                     style={{ width: `${category.results.score}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-4 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold">{category.results.never}</div>
-                    <div className="text-sm text-gray-500">Never</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{category.results.rarely}</div>
-                    <div className="text-sm text-gray-500">Rarely</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{category.results.often}</div>
-                    <div className="text-sm text-gray-500">Often</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold">{category.results.always}</div>
-                    <div className="text-sm text-gray-500">Always</div>
-                  </div>
-                </div>
+                {category.results.score < 50 ? (
+                  <ul className="text-sm text-gray-500 dark:text-gray-400">
+                    {category.tips.map((tip, index) => (
+                      <li key={index} className="mb-2">
+                        - {tip}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    You are doing great in this area! Keep up the good work by
+                    maintaining your progress. Remember, continuous effort helps
+                    reinforce your success.
+                  </p>
+                )}
               </motion.div>
             ))}
           </div>
