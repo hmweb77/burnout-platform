@@ -1,6 +1,7 @@
 "use client"
 import Head from 'next/head';
 import "../app/globals.css";
+import Navbar from '@/components/Home/Navbar';
 
 
 
@@ -15,7 +16,7 @@ function MyApp({ Component, pageProps }) {
         <meta charSet="UTF-8" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      
+      <Navbar/>
       <Component {...pageProps} />
 
     </>
