@@ -19,27 +19,29 @@ export default function SurveyPage() {
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold mb-2">Assessment Survey</h1>
             <p className="text-gray-500 dark:text-gray-400">
-              Take a moment to honestly answer these questions about your well-being.
+              Take a moment to honestly answer these 20 questions about your well-being.
             </p>
           </div>
 
           {/* Progress Bar */}
-          <div className="mb-8">
-            <div
-              className="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden"
-              aria-live="polite"
-            >
-              <div
-                className={`h-2 rounded-full transition-all duration-300 ${
-                  progress === 100 ? "bg-green-500" : "bg-blue-500"
-                }`}
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
-              {progress}% Complete
-            </p>
-          </div>
+          <div
+  className="mb-8 sticky top-0 bg-gray-50 dark:bg-gray-900 z-50 p-4"
+  aria-live="polite"
+>
+  <div
+    className="relative w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden"
+  >
+    <div
+      className={`h-2 rounded-full transition-all duration-300 ${
+        progress === 100 ? "bg-green-500" : "bg-blue-500"
+      }`}
+      style={{ width: `${progress}%` }}
+    ></div>
+  </div>
+  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 text-center">
+    {progress}% Complete
+  </p>
+</div>
 
           {/* Tooltip for progress */}
           {progress === 100 && (

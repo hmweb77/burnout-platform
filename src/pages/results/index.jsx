@@ -194,7 +194,7 @@ export default function ResultsPage() {
                     style={{ width: `${category.results.score}%` }}
                   />
                 </div>
-                {category.results.score < 50 ? (
+                {category.results.score < 80 ? (
                   <ul className="text-sm text-gray-500 dark:text-gray-400">
                     {category.tips.map((tip, index) => (
                       <li key={index} className="mb-2">
