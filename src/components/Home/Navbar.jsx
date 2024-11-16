@@ -75,14 +75,14 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
-        </nav>
-      </div>
           <button
             className="bg-violet-500 text-white px-4 py-2 rounded-lg hover:bg-violet-600 transition"
             onClick={() => setMobileMenuOpen(false)}
           >
             Login
           </button>
+        </nav>
+      </div>
     </div>
   );
 }
