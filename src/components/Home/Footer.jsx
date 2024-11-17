@@ -7,8 +7,8 @@ export default function Footer() {
       <div className="container px-4 md:px-6 py-12">
         <div className="grid gap-8 md:grid-cols-2">
           <div>
-            <h3 className="text-lg font-semibold mb-4">Burnout Insights</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <h3 className="text-lg font-semibold mb-4">Recharge Hub</h3>
+            <p className="text-sm text-gray-500 sm:pr-40 dark:text-gray-400">
               Helping professionals understand and manage their well-being through data-driven insights.
             </p>
           </div>
@@ -50,7 +50,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8  pt-8 text-center text-sm text-gray-500 dark:text-gray-400">
-          © {new Date().getFullYear()} Burnout Insights. All rights reserved.
+          © {new Date().getFullYear()} Recharge Hub. All rights reserved.
         </div>
       </div>
     </footer>

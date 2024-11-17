@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const navLinks = [
@@ -11,24 +12,31 @@ const navLinks = [
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname(); // Get the current path to highlight active link
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
 
   return (
-    <div className="bg-gradient-to-r from-blue-400 to-violet-500 text-white shadow">
+    <div className="bg-gradient-to-r from-blue-400 to-violet-500 text-white shadow sticky top-0 z-50">
       <div className="container mx-auto flex justify-between items-center p-4 lg:px-8">
         {/* Logo */}
         <div className="flex lg:flex-1">
-          <Link href="/">
-            <span className="text-2xl font-bold text-white">TheShield</span>
+          <Link href="/" aria-label="Recharge Hub Home">
+            <span className="text-2xl font-bold text-white">Recharge Hub</span>
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex lg:gap-12 lg:justify-center lg:flex-1">
+        <nav className="hidden lg:flex lg:gap-10">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium hover:text-teal-300"
+              className={`text-sm font-medium ${
+                pathname === link.href ? "text-teal-300" : "hover:text-teal-300"
+              }`}
             >
               {link.name}
             </Link>
@@ -37,16 +45,21 @@ export default function Navbar() {
 
         {/* Login Button */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <button className="bg-violet-500 text-white px-4 py-2 rounded-lg hover:bg-violet-600 transition">
-            Login
-          </button>
+          <Link href="/login">
+            <button
+              className="bg-violet-500 text-white px-4 py-2 rounded-lg hover:bg-violet-600 transition"
+            >
+              Login
+            </button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
         <div className="lg:hidden">
           <button
             type="button"
-            onClick={() => setMobileMenuOpen(true)}
+            onClick={toggleMobileMenu}
+            aria-label="Toggle mobile menu"
             className="text-white focus:outline-none"
           >
             {mobileMenuOpen ? (
@@ -69,18 +82,22 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium hover:text-teal-300"
-              onClick={() => setMobileMenuOpen(true)}
+              className={`text-sm font-medium ${
+                pathname === link.href ? "text-teal-300" : "hover:text-teal-300"
+              }`}
+              onClick={() => setMobileMenuOpen(false)}
             >
               {link.name}
             </Link>
           ))}
-          <button
-            className="bg-violet-500 text-white px-4 py-2 rounded-lg hover:bg-violet-600 transition"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Login
-          </button>
+          <Link href="/login">
+            <button
+              className="bg-violet-500 text-white px-4 py-2 rounded-lg hover:bg-violet-600 transition"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Login
+            </button>
+          </Link>
         </nav>
       </div>
     </div>

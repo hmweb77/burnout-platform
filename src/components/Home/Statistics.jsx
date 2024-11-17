@@ -14,7 +14,7 @@ function Statistics() {
           extensive learning library, complemented by a network of specialists for
           unique challenges.
           Track your progress with regular assessments, enjoying the flexibility
-          and convenience of our platform. Experience a holistic approach to
+          and convenience of our platform. Experience an approach to
           growth, focusing on both achieving goals and promoting overall
           well-being, empowering you to pursue new challenges and opportunities.
         </p>

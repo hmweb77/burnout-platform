@@ -46,6 +46,13 @@ const validationSchema = Yup.object().shape(
     }, {})
 );
 
+const initialValues = Object.keys(questions)
+  .flatMap((category) => questions[category])
+  .reduce((values, _, index) => {
+    values[`q${index + 1}`] = "";
+    return values;
+  }, {});
+
 const options = [
   { value: "1", label: "Never" },
   { value: "2", label: "Rarely" },
@@ -53,14 +60,14 @@ const options = [
   { value: "4", label: "Always" },
 ];
 
-export default function SurveyForm({ onProgressChange }) {
+export default function SurveyForm({ onSurveySubmit,onProgressChange }) {
   const router = useRouter();
   const allQuestions = Object.values(questions).flat();
 
-  const initialValues = allQuestions.reduce((acc, _, index) => {
-    acc[`q${index + 1}`] = "";
-    return acc;
-  }, {});
+//   const initialValues = allQuestions.reduce((acc, _, index) => {
+//     acc[`q${index + 1}`] = "";
+//     return acc;
+//   }, {});
 
   useEffect(() => {
     // Ensure progress is reset initially
@@ -71,11 +78,7 @@ export default function SurveyForm({ onProgressChange }) {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={(values) => {
-        console.log("Survey Results:", values);
-        localStorage.setItem("surveyResponses", JSON.stringify(values));
-        router.push("/results"); // Navigate to the results page
-      }}
+      onSubmit={onSurveySubmit}
     >
       {({ values, handleChange, errors, touched }) => {
         useEffect(() => {

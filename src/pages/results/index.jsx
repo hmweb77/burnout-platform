@@ -2,83 +2,133 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { auth, db } from "@/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
 import { Download, Share2 } from "lucide-react";
-
+import withAuth from "@/components/withAuth";
 import BurnoutRadarChart from "@/components/survey/radar-chart";
+import SuggestCoach from '@/components/survey/suggestCoach'
 
-export default function ResultsPage() {
+function ResultsPage() {
+  const [surveys, setSurveys] = useState([]);
   const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const calculateCategoryResults = (responses, startIndex, endIndex) => {
+    let never = 0,
+      rarely = 0,
+      often = 0,
+      always = 0;
+
+    for (let i = startIndex; i <= endIndex; i++) {
+      const response = responses[`q${i}`];
+      if (response === "1") never++;
+      else if (response === "2") rarely++;
+      else if (response === "3") often++;
+      else if (response === "4") always++;
+    }
+
+    const score =
+      ((never * 1 + rarely * 2 + often * 3 + always * 4) / (4 * 5)) * 100;
+    return { never, rarely, often, always, score };
+  };
 
   useEffect(() => {
-    const responses = JSON.parse(
-      localStorage.getItem("surveyResponses") || "{}"
-    );
+    const fetchSurveys = async () => {
+      try {
+        const userId = auth.currentUser?.uid;
+        if (!userId) {
+          throw new Error("User is not authenticated");
+        }
 
-    const calculateCategoryResults = (startIndex, endIndex) => {
-      let never = 0,
-        rarely = 0,
-        often = 0,
-        always = 0;
+        const surveysRef = collection(db, "users", userId, "surveys");
+        const querySnapshot = await getDocs(surveysRef);
 
-      for (let i = startIndex; i <= endIndex; i++) {
-        const response = responses[`q${i}`];
-        if (response === "1") never++;
-        else if (response === "2") rarely++;
-        else if (response === "3") often++;
-        else if (response === "4") always++;
+        const fetchedSurveys = [];
+        querySnapshot.forEach((doc) => {
+          fetchedSurveys.push({ id: doc.id, ...doc.data() });
+        });
+
+        if (fetchedSurveys.length > 0) {
+          setSurveys(fetchedSurveys);
+
+          // Use the latest survey responses
+          const latestSurvey = fetchedSurveys[fetchedSurveys.length - 1];
+
+          const emotionsResults = calculateCategoryResults(latestSurvey, 1, 5);
+          const mindsetResults = calculateCategoryResults(latestSurvey, 6, 10);
+          const lifestyleResults = calculateCategoryResults(latestSurvey, 11, 15);
+          const workEnvironmentResults = calculateCategoryResults(latestSurvey, 16, 20);
+
+          const overall = {
+            never:
+              emotionsResults.never +
+              mindsetResults.never +
+              lifestyleResults.never +
+              workEnvironmentResults.never,
+            rarely:
+              emotionsResults.rarely +
+              mindsetResults.rarely +
+              lifestyleResults.rarely +
+              workEnvironmentResults.rarely,
+            often:
+              emotionsResults.often +
+              mindsetResults.often +
+              lifestyleResults.often +
+              workEnvironmentResults.often,
+            always:
+              emotionsResults.always +
+              mindsetResults.always +
+              lifestyleResults.always +
+              workEnvironmentResults.always,
+            score:
+              (emotionsResults.score +
+                mindsetResults.score +
+                lifestyleResults.score +
+                workEnvironmentResults.score) /
+              4,
+          };
+
+          setResults({
+            emotions: emotionsResults,
+            mindset: mindsetResults,
+            lifestyle: lifestyleResults,
+            workEnvironment: workEnvironmentResults,
+            overall,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching survey results:", error.message);
+      } finally {
+        setLoading(false);
       }
-
-      const score =
-        ((never * 1 + rarely * 2 + often * 3 + always * 4) / (4 * 5)) * 100;
-      return { never, rarely, often, always, score };
     };
 
-    const emotionsResults = calculateCategoryResults(1, 5);
-    const mindsetResults = calculateCategoryResults(6, 10);
-    const lifestyleResults = calculateCategoryResults(11, 15);
-    const workEnvironmentResults = calculateCategoryResults(16, 20);
-
-    const overall = {
-      never:
-        emotionsResults.never +
-        mindsetResults.never +
-        lifestyleResults.never +
-        workEnvironmentResults.never,
-      rarely:
-        emotionsResults.rarely +
-        mindsetResults.rarely +
-        lifestyleResults.rarely +
-        workEnvironmentResults.rarely,
-      often:
-        emotionsResults.often +
-        mindsetResults.often +
-        lifestyleResults.often +
-        workEnvironmentResults.often,
-      always:
-        emotionsResults.always +
-        mindsetResults.always +
-        lifestyleResults.always +
-        workEnvironmentResults.always,
-      score:
-        (emotionsResults.score +
-          mindsetResults.score +
-          lifestyleResults.score +
-          workEnvironmentResults.score) /
-        4,
-    };
-
-    setResults({
-      emotions: emotionsResults,
-      mindset: mindsetResults,
-      lifestyle: lifestyleResults,
-      workEnvironment: workEnvironmentResults,
-      overall,
-    });
+    fetchSurveys();
   }, []);
 
-  if (!results) {
+  if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (!results) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+        <div className="container max-w-4xl mx-auto px-4 text-center">
+          <h1 className="text-3xl font-bold mb-4">No Results Found</h1>
+          <p className="text-gray-500 dark:text-gray-400 mb-8">
+            You haven't completed any surveys yet. Please take a survey to view
+            your results.
+          </p>
+          <Link href="/survey">
+            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+              Take a Survey
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const categories = [
@@ -151,31 +201,6 @@ export default function ResultsPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Overall Score</h2>
-            <div className="bg-gray-100 dark:bg-gray-900 p-6 rounded-lg">
-              <div className="relative w-full h-4 bg-gray-300 rounded-lg overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
-                  style={{ width: `${results.overall.score}%` }}
-                />
-              </div>
-              <div className="flex justify-between text-sm text-gray-500 mt-2">
-                <span>High Risk</span>
-                <span>Moderate Risk</span>
-                <span>Low Risk</span>
-              </div>
-              <br></br>
-              <p>
-                Your overall score reflects your current risk level for burnout.
-                A higher score indicates lower risk and better resilience, while
-                a lower score suggests a higher likelihood of burnout. Take time
-                to reflect on the areas with lower scores and explore strategies
-                to improve your well-being and balance.
-              </p>
-            </div>
-          </div>
-
-          <div className="mb-8">
             <BurnoutRadarChart data={radarData} />
           </div>
           <div className="grid gap-6 md:grid-cols-2 mb-8">
@@ -214,10 +239,7 @@ export default function ResultsPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-              <Download className="w-4 h-4" />
-              Download Report
-            </button>
+            
             <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
               <Share2 className="w-4 h-4" />
               Share Results
@@ -229,7 +251,11 @@ export default function ResultsPage() {
             </Link>
           </div>
         </motion.div>
+      
       </div>
+      <SuggestCoach/>
     </div>
   );
 }
+
+export default withAuth(ResultsPage);

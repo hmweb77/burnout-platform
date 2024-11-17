@@ -1,11 +1,39 @@
 "use client";
-
+import { db, auth } from "@/firebase";
+import { collection, doc, setDoc } from "firebase/firestore";
+import withAuth from "@/components/withAuth";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import SurveyForm from "@/components/survey/SurveyForm";
 
-export default function SurveyPage() {
+function SurveyPage() {
   const [progress, setProgress] = useState(0);
+  const router = useRouter();
+  const handleSurveySubmit = async (values) => {
+    try {
+      const userId = auth.currentUser?.uid; // Get current user's ID
+      if (!userId) throw new Error("You must be logged in to submit the survey.");
+
+      const surveyId = Date.now().toString(); // Unique survey ID
+      
+      const surveyRef = doc(db, "users", userId, "surveys", surveyId);
+
+      // Save survey results in Firestore
+      await setDoc(surveyRef, {
+        ...values,
+        submittedAt: new Date(),
+      });
+ 
+      alert("Survey submitted successfully!");
+      router.push("/results"); 
+    } catch (error) {
+      console.error("Error submitting survey:", error.message);
+    }
+  };
+  const handleProgressChange = (newProgress) => {
+    setProgress(newProgress);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
@@ -51,9 +79,11 @@ export default function SurveyPage() {
           )}
 
           {/* Survey Form */}
-          <SurveyForm onProgressChange={setProgress} />
+          <SurveyForm onSurveySubmit={handleSurveySubmit} onProgressChange={handleProgressChange} />
         </div>
       </motion.div>
     </div>
   );
 }
+
+export default withAuth(SurveyPage);

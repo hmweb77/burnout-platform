@@ -12,10 +12,9 @@ export default function SignupPage() {
     name: "",
     email: "",
     password: "",
-    age: "",
-    typeOfWork: "",
   });
   const [progress, setProgress] = useState(0);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,18 +28,24 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, password, age, typeOfWork } = formData;
+    const { name, email, password } = formData;
+
+    if (!name || !password) {
+      alert("Username and Password are required.");
+      return;
+    }
 
     try {
       // Firebase authentication and Firestore integration
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email || `${name}@example.com`, password);
       const userId = userCredential.user.uid;
 
-      await setDoc(doc(db, "users", userId), { name, email, age, typeOfWork });
+      await setDoc(doc(db, "users", userId), { name, email });
 
       alert("Signup successful!");
-      setFormData({ name: "", email: "", password: "", age: "", typeOfWork: "" });
+      setFormData({ name: "", email: "", password: "" });
       setProgress(0);
+      setIsSubmitted(true);
     } catch (error) {
       alert(error.message);
     }
@@ -60,16 +65,16 @@ export default function SignupPage() {
             <p className="text-gray-500 dark:text-gray-400">
               Please fill out the form to create your account and start your survey.
             </p>
+            <p className="text-gray-500 dark:text-gray-400">
+              Note: You can sign up with your username only. However, if you don't provide an email, you will not be able to recover your password.
+            </p>
           </div>
-
-          
-
           {/* Signup Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
               name="name"
-              placeholder="Full Name"
+              placeholder="Username"
               value={formData.name}
               onChange={handleChange}
               className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
@@ -78,11 +83,10 @@ export default function SignupPage() {
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="Email (optional)"
               value={formData.email}
               onChange={handleChange}
               className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-              required
             />
             <input
               type="password"
@@ -93,37 +97,29 @@ export default function SignupPage() {
               className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
               required
             />
-            <input
-              type="number"
-              name="age"
-              placeholder="Age"
-              value={formData.age}
-              onChange={handleChange}
-              className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-              required
-            />
-            <input
-              type="text"
-              name="typeOfWork"
-              placeholder="Type of Work"
-              value={formData.typeOfWork}
-              onChange={handleChange}
-              className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-              required
-            />
-             <Link href="/survey">
-                <button
-                 size="lg"
-                  className=" flex items-center mt-8 bg-gradient-to-r p-2 from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/50 transition-all duration-300 w-full rounded-lg sm:w-auto"
-                >
-                  Start the Survey
-                 
-                </button>
-              </Link>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-600 transition"
+            >
+              Sign Up
+            </button>
           </form>
+
+          {/* Start Survey Button */}
+          <Link href="/survey">
+            <button
+              disabled={!isSubmitted}
+              className={`mt-8 w-full flex items-center justify-center px-4 py-2 rounded-lg shadow-lg transition-all ${
+                isSubmitted
+                  ? "bg-gradient-to-r from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 text-white"
+                  : "bg-gray-400 text-gray-200 cursor-not-allowed"
+              }`}
+            >
+              Start the Survey
+            </button>
+          </Link>
         </div>
       </motion.div>
     </div>
   );
 }
-

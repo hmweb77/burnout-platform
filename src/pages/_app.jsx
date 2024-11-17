@@ -9,6 +9,7 @@ import Navbar from '@/components/Home/Navbar';
 function MyApp({ Component, pageProps }) {
   return (
     <>
+    
     <Head> 
         <title>Burnout Insights - Understand Your Well-being</title>
         <meta name="description" content="Take our free survey to identify areas of improvement in your emotions, mindset, lifestyle, and work environment." />
@@ -16,7 +17,7 @@ function MyApp({ Component, pageProps }) {
         <meta charSet="UTF-8" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar/>
+      <Navbar />
       <Component {...pageProps} />
 
     </>

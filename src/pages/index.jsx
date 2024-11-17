@@ -10,7 +10,6 @@ import Statistics from "@/components/Home/Statistics"
 export default function Home() {
   return (
     <main className="min-h-screen">
-   
     <HeroSection />
     <HowItWorks />
     <Features />
@@ -19,5 +18,7 @@ export default function Home() {
     <CallToAction />
     <Footer />
   </main>
+    
+
   )
 }
