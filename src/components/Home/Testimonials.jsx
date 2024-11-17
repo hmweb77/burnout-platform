@@ -5,60 +5,47 @@ import Link from "next/link";
 
 const coaches = [
   {
-    name: "Dr. Laura Bennett",
-    specialization: "Mindfulness & Stress Management Coach",
+    name: "Alina Cristina",
+    specialization: "Leadership & Mindset Coach",
     content:
-      "Dr. Bennett specializes in mindfulness practices and meditation techniques. She provides tailored strategies to help clients build resilience and find balance in their lives.",
-    image:
-      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=100&h=100&fit=crop",
-    urlC: "",
+      "Alina empowers individuals and organizations to achieve sustainable growth by unlocking their potential and overcoming limiting beliefs. She specializes in mindset coaching and leadership development.",
+    image: "/Screenshot 2024-11-17 at 10.51.42.png",
+    urlC: "https://calendly.com/hmweb77/coach-demo",
   },
   {
-    name: "James Carter",
-    specialization: "Work-Life Balance Strategist",
+    name: "Jonathan OGrady",
+    specialization: "Performance & Emotional Intelligence Coach",
     content:
-      "With a background in organizational psychology, James helps clients create sustainable work-life balance by focusing on effective time management and boundary-setting.",
-    image:
-      "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=100&h=100&fit=crop",
-    urlC: "",
+      "Jonathan helps high-performing professionals align success with fulfillment through emotional agility and resilience. He specializes in helping clients master their emotions and thrive personally and professionally.",
+    image: "/Screenshot 2024-11-17 at 10.55.38.png",
+    urlC: "https://calendly.com/hmweb77/coach-demo",
   },
   {
-    name: "Sophia Kim",
-    specialization: "Wellness & Lifestyle Coach",
+    name: "Adriana Fernandes",
+    specialization: "Innovator & Technology Enthusiast",
     content:
-      "Sophia focuses on holistic wellness, emphasizing nutrition, sleep, and fitness to help her clients regain energy and reduce stress.",
-    image:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop",
-    urlC: "",
+      "Adriana explores the intersection of AI, quantum computing, neuroscience, and spatial analysis. She bridges cutting-edge discoveries with practical applications for meaningful progress and innovation.",
+    image: "/Screenshot 2024-11-17 at 10.55.55.png",
+    urlC: "https://calendly.com/hmweb77/coach-demo",
   },
   {
-    name: "Ryan Patel",
-    specialization: "Career & Performance Coach",
+    name: "Martina Anguelova",
+    specialization: "Astrology & Wellness Guide",
     content:
-      "Ryan helps professionals optimize their work habits and manage career challenges to prevent burnout while achieving their goals.",
-    image:
-      "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=100&h=100&fit=crop",
-    urlC: "",
+      "Martina helps individuals unlock their potential through astrology and holistic health practices. She focuses on aligning clients with transformative practices for well-being and balance.",
+    image: "/Screenshot 2024-11-17 at 10.55.45.png",
+    urlC: "https://calendly.com/hmweb77/coach-demo",
   },
   {
-    name: "Emily Nguyen",
-    specialization: "Emotional Wellbeing Specialist",
+    name: "Dani Heredia",
+    specialization: "Technology & Leadership Coach",
     content:
-      "Emily offers emotional support and practical techniques for managing anxiety and improving emotional health during challenging times.",
-    image:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&h=100&fit=crop",
-    urlC: "",
-  },
-  {
-    name: "Daniel Torres",
-    specialization: "Fitness & Stress Reduction Expert",
-    content:
-      "Daniel combines physical activity with stress management techniques to help clients build healthier habits and reduce tension effectively.",
-    image:
-      "https://images.unsplash.com/photo-1595152772835-219674b2a8a6?w=100&h=100&fit=crop",
-    urlC: "",
+      "Dani combines over 10 years of experience in technology and leadership to bridge technical and business teams. He fosters resilience and continuous improvement in diverse teams worldwide.",
+    image: "/Screenshot 2024-11-17 at 10.55.29.png",
+    urlC: "https://calendly.com/hmweb77/coach-demo",
   },
 ];
+
 
 export default function Testimonials() {
   return (
@@ -105,7 +92,9 @@ export default function Testimonials() {
               </p>
               <div className="flex justify-center mt-4">
                 <button className=" bg-gradient-to-r p-2 from-violet-500 to-blue-500 hover:from-blue-600 hover:to-violet-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/50 transition-all rounded-lg px-4 sm:w-auto">
-                  Book
+                 <Link href="/coaches">
+                 Details
+                 </Link> 
                 </button>
                 </div>
             </motion.div>
