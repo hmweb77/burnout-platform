@@ -113,7 +113,7 @@ export default function SurveyForm({ onSurveySubmit,onProgressChange }) {
                     return (
                       <div
                         key={fieldName}
-                        className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg"
+                        className="bg-gray-900/50 p-4 rounded-lg"
                       >
                         <p className="mb-4 font-medium">{question}</p>
                         <div className="grid grid-cols-4 gap-2">
