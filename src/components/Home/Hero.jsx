@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 import Link from "next/link";
-import { Brain, ArrowRight } from "lucide-react";
+import { Brain } from "lucide-react";
 
 export default function HeroSection() {
   return (
