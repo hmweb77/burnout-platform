@@ -83,7 +83,7 @@ export default function SignupPage() {
             <input
               type="email"
               name="email"
-              placeholder="Email (optional)"
+              placeholder="Email"
               value={formData.email}
               onChange={handleChange}
               className="w-full p-2 border rounded bg-gray-700 border-gray-600"
