@@ -17,7 +17,7 @@ export default function CallToAction() {
           className="flex flex-col items-center text-center space-y-4"
         >
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Ready to Start Your Journey?</h2>
-          <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400">
+          <p className="max-w-[600px]  md:text-xl text-gray-400">
             Take the first step towards better understanding and managing your well-being
           </p>
           <Link href="/survey">

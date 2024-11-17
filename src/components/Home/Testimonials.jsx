@@ -49,7 +49,7 @@ const coaches = [
 
 export default function Testimonials() {
   return (
-    <section className="p-4 sm:p-24 bg-gray-50 dark:bg-gray-900">
+    <section className="p-4 sm:p-24  bg-gray-900">
       <div className="container px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -61,7 +61,7 @@ export default function Testimonials() {
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
             Our Coaches
           </h2>
-          <p className="mt-4 text-gray-500 dark:text-gray-400">
+          <p className="mt-4  text-gray-400">
             Our professional coaches that will help you to overcome your burnout
           </p>
         </motion.div>
@@ -73,7 +73,7 @@ export default function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.2 }}
-              className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg"
+              className=" bg-gray-800 p-6 rounded-lg shadow-lg"
             >
               <div className="flex items-center mb-4">
                 <Image
@@ -87,7 +87,7 @@ export default function Testimonials() {
                   <h3 className="font-bold">{testimonial.name}</h3>
                 </div>
               </div>
-              <p className="text-gray-600 text-justify dark:text-gray-300">
+              <p className=" text-justify text-gray-300">
                 {testimonial.content}
               </p>
               <div className="flex justify-center mt-4">

@@ -38,7 +38,7 @@ export default function Features() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Key Features</h2>
-          <p className="mt-4 text-gray-500 dark:text-gray-400">Comprehensive analysis across four essential dimensions</p>
+          <p className="mt-4 text-gray-400">Comprehensive analysis across four essential dimensions</p>
         </motion.div>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => (

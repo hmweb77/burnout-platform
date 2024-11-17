@@ -23,7 +23,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="p-4 sm:p-24 bg-gray-50 dark:bg-gray-900">
+    <section className="p-4 sm:p-24 bg-gray-900">
       <div className="container px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -33,7 +33,7 @@ export default function HowItWorks() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">How It Works</h2>
-          <p className="mt-4 text-gray-500 dark:text-gray-400">Three simple steps to better understanding your well-being</p>
+          <p className="mt-4 text-gray-400">Three simple steps to better understanding your well-being</p>
         </motion.div>
         <div className="grid gap-8 md:grid-cols-3">
           {steps.map((step, index) => (
@@ -45,7 +45,7 @@ export default function HowItWorks() {
               transition={{ duration: 0.5, delay: index * 0.2 }}
               className="flex flex-col items-center text-center"
             >
-              <div className="mb-4 p-4 bg-white dark:bg-gray-800 rounded-full shadow-lg">
+              <div className="mb-4 p-4 bg-gray-800 rounded-full shadow-lg">
                 <step.icon className="w-8 h-8 text-primary" />
               </div>
               <h3 className="text-xl font-bold mb-2">{step.title}</h3>

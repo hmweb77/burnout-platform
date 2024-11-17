@@ -114,10 +114,10 @@ function ResultsPage() {
 
   if (!results) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+      <div className="min-h-screen  bg-gray-900 py-12">
         <div className="container max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-3xl font-bold mb-4">No Results Found</h1>
-          <p className="text-gray-500 dark:text-gray-400 mb-8">
+          <p className=" text-gray-400 mb-8">
             You haven't completed any surveys yet. Please take a survey to view
             your results.
           </p>
@@ -184,17 +184,17 @@ function ResultsPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+    <div className="min-h-screen  bg-gray-900 py-12">
       <div className="container max-w-4xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8"
+          className=" bg-gray-800 rounded-lg shadow-lg p-6 md:p-8"
         >
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">Assessment Results</h1>
-            <p className="text-gray-500 dark:text-gray-400">
+            <p className=" text-gray-400">
               Based on your responses, here's a detailed analysis of your
               well-being.
             </p>
@@ -210,7 +210,7 @@ function ResultsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="bg-gray-50 dark:bg-gray-900 p-6 rounded-lg"
+                className=" bg-gray-900 p-6 rounded-lg"
               >
                 <h3 className="text-xl font-semibold mb-4">{category.name}</h3>
                 <div className="relative w-full h-3 bg-gray-300 rounded-lg overflow-hidden mb-4">
@@ -220,7 +220,7 @@ function ResultsPage() {
                   />
                 </div>
                 {category.results.score < 80 ? (
-                  <ul className="text-sm text-gray-500 dark:text-gray-400">
+                  <ul className="text-sm  text-gray-400">
                     {category.tips.map((tip, index) => (
                       <li key={index} className="mb-2">
                         - {tip}
@@ -228,7 +228,7 @@ function ResultsPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm  text-gray-400">
                     You are doing great in this area! Keep up the good work by
                     maintaining your progress. Remember, continuous effort helps
                     reinforce your success.
@@ -240,7 +240,7 @@ function ResultsPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             
-            <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+            <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg  hover:bg-gray-700">
               <Share2 className="w-4 h-4" />
               Share Results
             </button>

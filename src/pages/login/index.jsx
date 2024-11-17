@@ -24,14 +24,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
+    <div className="min-h-screen  bg-gray-900 py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="container max-w-3xl mx-auto px-4"
       >
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8">
+        <div className=" bg-gray-800 rounded-lg shadow-lg p-6 md:p-8">
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold mb-2">Login</h1>
             {error && (
@@ -48,7 +48,7 @@ export default function LoginPage() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+              className="w-full p-2 border rounded bg-gray-700 border-gray-600"
               required
             />
             <input
@@ -57,7 +57,7 @@ export default function LoginPage() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+              className="w-full p-2 border rounded bg-gray-700 border-gray-600"
               required
             />
             <button
