@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { auth } from "@/firebase"; // Ensure this path matches your project structure
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import Image from "next/image";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -44,7 +45,7 @@ export default function Navbar() {
         {/* Logo */}
         <div className="flex lg:flex-1">
           <Link href="/">
-            <span className="text-2xl font-bold text-white">Recharge Hub</span>
+            <Image src="/logo.png" width={170} height={50} alt="logo"/>
           </Link>
         </div>
 
