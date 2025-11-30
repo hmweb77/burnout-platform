@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@getbrevo/brevo": "^3.0.1",
     "@heroicons/react": "^2.1.5",
     "autoprefixer": "10.4.20",
     "firebase": "^11.0.2",

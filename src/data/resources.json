@@ -1,0 +1,75 @@
+[
+  {
+    "id": "1",
+    "type": "ebook",
+    "title": "Understanding Burnout: A Comprehensive Guide",
+    "file": "/resources/ebooks/understanding-burnout.pdf"
+  },
+  {
+    "id": "2",
+    "type": "podcast",
+    "title": "The Burnout Recovery Podcast",
+    "link": "https://example.com/podcast/burnout-recovery"
+  },
+  {
+    "id": "3",
+    "type": "course",
+    "title": "Building Resilience: A 4-Week Course",
+    "link": "https://example.com/courses/building-resilience"
+  },
+  {
+    "id": "4",
+    "type": "template",
+    "title": "Weekly Wellbeing Tracker Template",
+    "file": "/resources/templates/weekly-wellbeing-tracker.xlsx"
+  },
+  {
+    "id": "5",
+    "type": "ebook",
+    "title": "Mindful Living: Practices for Daily Wellness",
+    "file": "/resources/ebooks/mindful-living.pdf"
+  },
+  {
+    "id": "6",
+    "type": "podcast",
+    "title": "Work-Life Balance Conversations",
+    "link": "https://example.com/podcast/work-life-balance"
+  },
+  {
+    "id": "7",
+    "type": "course",
+    "title": "Stress Management Fundamentals",
+    "link": "https://example.com/courses/stress-management"
+  },
+  {
+    "id": "8",
+    "type": "template",
+    "title": "Goal Setting and Progress Template",
+    "file": "/resources/templates/goal-setting-template.docx"
+  },
+  {
+    "id": "9",
+    "type": "ebook",
+    "title": "Emotional Intelligence Handbook",
+    "file": "/resources/ebooks/emotional-intelligence.pdf"
+  },
+  {
+    "id": "10",
+    "type": "podcast",
+    "title": "Mental Health Matters",
+    "link": "https://example.com/podcast/mental-health-matters"
+  },
+  {
+    "id": "11",
+    "type": "course",
+    "title": "Mindfulness and Meditation Basics",
+    "link": "https://example.com/courses/mindfulness-basics"
+  },
+  {
+    "id": "12",
+    "type": "template",
+    "title": "Daily Reflection Journal Template",
+    "file": "/resources/templates/daily-reflection-journal.pdf"
+  }
+]
+

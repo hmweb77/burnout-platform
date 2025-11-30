@@ -37,10 +37,14 @@ export default function SignupPage() {
 
     try {
       // Firebase authentication and Firestore integration
-      const userCredential = await createUserWithEmailAndPassword(auth, email || `${name}@example.com`, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
 
+      console.log("USER CREATED:", userId); // Check 1
+
       await setDoc(doc(db, "users", userId), { name, email });
+
+      console.log("DOC SAVED TO FIRESTORE"); // Check 2
 
       alert("Signup successful!");
       setFormData({ name: "", email: "", password: "" });
