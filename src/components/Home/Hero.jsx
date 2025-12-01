@@ -48,9 +48,18 @@ export default function HeroSection() {
               <Link href="/survey">
                 <button
                  size="lg"
+                  className=" flex items-center p-2 border border-gradient-to-r from-blue-500 to-violet-900 hover:from-blue-600 hover:to-violet-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/50 transition-all duration-300 w-full rounded-lg sm:w-auto"
+                >
+                  Free Resources
+                  <Brain className="ml-2 h-5 w-5" />
+                </button>
+              </Link>
+              <Link href="/survey">
+                <button
+                 size="lg"
                   className=" flex items-center bg-gradient-to-r p-2 from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/50 transition-all duration-300 w-full rounded-lg sm:w-auto"
                 >
-                  Start the Survey
+                  Free Assessment
                   <Brain className="ml-2 h-5 w-5" />
                 </button>
               </Link>
@@ -64,7 +73,7 @@ export default function HeroSection() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="flex flex-wrap gap-3 mt-8"
             >
-              {["Free Assessment", "5 Minutes", "Expert Insights", "Personalized Report"].map((feature, index) => (
+              {["Free Assessment", "5 Minutes", "Expert u Insights", "Personalized Report"].map((feature, index) => (
                 <span
                   key={index}
                   className="px-4 py-2 rounded-full text-sm bg-white/10 backdrop-blur-sm border border-white/20 text-white"

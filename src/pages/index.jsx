@@ -1,10 +1,12 @@
 import  HeroSection  from "@/components/Home/Hero"
 import  HowItWorks  from "@/components/Home/HowItWork"
-import  Testimonials  from "@/components/Home/Testimonials"
-import  Features  from "@/components/Home/Features"
+import  PaidAssessment  from "@/components/Home/PaidAssessment"
+import  MiniAssessment  from "@/components/Home/MiniAssessment"
 import  CallToAction  from "@/components/Home/CallToAction"
 import  Footer  from "@/components/Home/Footer"
-import Statistics from "@/components/Home/Statistics"
+import FreeResources from "@/components/Home/FreeResources"
+import AboutUs from "@/components/Home/AboutUs"
+import Articles from "@/components/Home/Articles"
 
 
 export default function Home() {
@@ -12,9 +14,11 @@ export default function Home() {
     <main className="min-h-screen">
     <HeroSection />
     <HowItWorks />
-    <Features />
-    <Testimonials />
-    <Statistics/>
+    <PaidAssessment />
+    <MiniAssessment />
+    <FreeResources />
+    <AboutUs />
+    <Articles />
     <CallToAction />
     <Footer />
   </main>

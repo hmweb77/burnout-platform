@@ -8,11 +8,10 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import Image from "next/image";
 
 const navLinks = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { name: "Resources", href: "/resources" },
-  { name: "Survey", href: "/survey" },
-  { name: "Result", href: "/results" },
+  // { name: "Home", href: "/" },
+  // { name: "About", href: "/about" },
+  // { name: "Survey", href: "/survey" },
+  // { name: "Result", href: "/results" },
 ];
 
 export default function Navbar() {

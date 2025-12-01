@@ -9,8 +9,7 @@ import resourcesData from "@/data/resources.json";
 // Helper function to initialize Brevo API client
 function getBrevoApiInstance() {
   // Check if BREVO_API_KEY is available
-  const apiKey = process.env.NEXT_PUBLIC_BREVO_API_KEY;
-  console.warn(apiKey,",,,,,,,BREVO_API_KEY not found in environment variables");
+  const apiKey = process.env.BREVO_API_KEY;
   
   if (!apiKey) {
     console.warn("Make sure BREVO_API_KEY is set in .env.local file");

@@ -36,7 +36,7 @@ export default function EmailFormModal({ isOpen, onClose, resource }) {
           resourceId: resource.id,
         }),
       });
-console.log('responsetest ;;;;', response);
+      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         let errorMessage = errorData.error || errorData.message || `Failed to send resource (${response.status})`;
