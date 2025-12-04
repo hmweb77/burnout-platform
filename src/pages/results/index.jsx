@@ -1,125 +1,236 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { auth, db } from "@/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import Link from "next/link";
 import { Download, Share2 } from "lucide-react";
-import withAuth from "@/components/withAuth";
 import BurnoutRadarChart from "@/components/survey/radar-chart";
 import SuggestCoach from '@/components/survey/suggestCoach'
 
+/**
+ * Calculate category results from answer array format
+ * answers format: [1, 2, 3] where 1-5 are the response values
+ */
+const calculateCategoryResultsFromAnswers = (answers) => {
+  if (!Array.isArray(answers) || answers.length === 0) {
+    return { never: 0, rarely: 0, often: 0, always: 0, score: 0 };
+  }
+
+  let never = 0,
+    rarely = 0,
+    often = 0,
+    always = 0;
+
+  answers.forEach((value) => {
+    const numValue = typeof value === "string" ? parseInt(value) : value;
+    if (numValue === 1) never++;
+    else if (numValue === 2) rarely++;
+    else if (numValue === 3) often++;
+    else if (numValue === 4) always++;
+    else if (numValue === 5) always++; // Treat 5 as always
+  });
+
+  const total = answers.length;
+  const score = total > 0
+    ? ((never * 1 + rarely * 2 + often * 3 + always * 4) / (4 * total)) * 100
+    : 0;
+
+  return { never, rarely, often, always, score };
+};
+
+/**
+ * Calculate category results from old format (q1, q2, etc.)
+ * Legacy support for old survey format
+ */
+const calculateCategoryResults = (responses, startIndex, endIndex) => {
+  let never = 0,
+    rarely = 0,
+    often = 0,
+    always = 0;
+
+  for (let i = startIndex; i <= endIndex; i++) {
+    const response = responses[`q${i}`];
+    if (response === "1") never++;
+    else if (response === "2") rarely++;
+    else if (response === "3") often++;
+    else if (response === "4") always++;
+    else if (response === "5") always++;
+  }
+
+  const total = endIndex - startIndex + 1;
+  const score = total > 0
+    ? ((never * 1 + rarely * 2 + often * 3 + always * 4) / (4 * total)) * 100
+    : 0;
+
+  return { never, rarely, often, always, score };
+};
+
 function ResultsPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [surveys, setSurveys] = useState([]);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const calculateCategoryResults = (responses, startIndex, endIndex) => {
-    let never = 0,
-      rarely = 0,
-      often = 0,
-      always = 0;
-
-    for (let i = startIndex; i <= endIndex; i++) {
-      const response = responses[`q${i}`];
-      if (response === "1") never++;
-      else if (response === "2") rarely++;
-      else if (response === "3") often++;
-      else if (response === "4") always++;
-    }
-
-    const score =
-      ((never * 1 + rarely * 2 + often * 3 + always * 4) / (4 * 5)) * 100;
-    return { never, rarely, often, always, score };
-  };
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchSurveys = async () => {
+    const fetchResults = async () => {
       try {
         const userId = auth.currentUser?.uid;
-        if (!userId) {
-          throw new Error("User is not authenticated");
+        const assessmentId = searchParams?.get("assessmentId");
+
+        // If assessmentId is provided (from payment success), fetch from assessments collection
+        if (assessmentId) {
+          console.log("Fetching assessment results:", assessmentId);
+          const assessmentRef = doc(db, "assessments", assessmentId);
+          const assessmentDoc = await getDoc(assessmentRef);
+
+          if (assessmentDoc.exists()) {
+            const assessmentData = assessmentDoc.data();
+            
+            // Check if assessment has answers in new format
+            if (assessmentData.answers) {
+              const emotionsResults = calculateCategoryResultsFromAnswers(
+                assessmentData.answers.emotionalWellbeing || []
+              );
+              const mindsetResults = calculateCategoryResultsFromAnswers(
+                assessmentData.answers.mindsetWellbeing || []
+              );
+              const lifestyleResults = calculateCategoryResultsFromAnswers(
+                assessmentData.answers.lifestyleBalance || []
+              );
+              const physicalResults = calculateCategoryResultsFromAnswers(
+                assessmentData.answers.physicalWellbeing || []
+              );
+
+              const overall = {
+                never: emotionsResults.never + mindsetResults.never + lifestyleResults.never + physicalResults.never,
+                rarely: emotionsResults.rarely + mindsetResults.rarely + lifestyleResults.rarely + physicalResults.rarely,
+                often: emotionsResults.often + mindsetResults.often + lifestyleResults.often + physicalResults.often,
+                always: emotionsResults.always + mindsetResults.always + lifestyleResults.always + physicalResults.always,
+                score: (emotionsResults.score + mindsetResults.score + lifestyleResults.score + physicalResults.score) / 4,
+              };
+
+              setResults({
+                emotions: emotionsResults,
+                mindset: mindsetResults,
+                lifestyle: lifestyleResults,
+                workEnvironment: physicalResults, // Map physical to workEnvironment for display
+                overall,
+              });
+              setLoading(false);
+              return;
+            }
+          } else {
+            setError("Assessment not found");
+            setLoading(false);
+            return;
+          }
         }
 
-        const surveysRef = collection(db, "users", userId, "surveys");
-        const querySnapshot = await getDocs(surveysRef);
+        // If user is authenticated, fetch from user's surveys
+        if (userId) {
+          const surveysRef = collection(db, "users", userId, "surveys");
+          const querySnapshot = await getDocs(surveysRef);
 
-        const fetchedSurveys = [];
-        querySnapshot.forEach((doc) => {
-          fetchedSurveys.push({ id: doc.id, ...doc.data() });
-        });
-
-        if (fetchedSurveys.length > 0) {
-          setSurveys(fetchedSurveys);
-
-          // Use the latest survey responses
-          const latestSurvey = fetchedSurveys[fetchedSurveys.length - 1];
-
-          const emotionsResults = calculateCategoryResults(latestSurvey, 1, 5);
-          const mindsetResults = calculateCategoryResults(latestSurvey, 6, 10);
-          const lifestyleResults = calculateCategoryResults(latestSurvey, 11, 15);
-          const workEnvironmentResults = calculateCategoryResults(latestSurvey, 16, 20);
-
-          const overall = {
-            never:
-              emotionsResults.never +
-              mindsetResults.never +
-              lifestyleResults.never +
-              workEnvironmentResults.never,
-            rarely:
-              emotionsResults.rarely +
-              mindsetResults.rarely +
-              lifestyleResults.rarely +
-              workEnvironmentResults.rarely,
-            often:
-              emotionsResults.often +
-              mindsetResults.often +
-              lifestyleResults.often +
-              workEnvironmentResults.often,
-            always:
-              emotionsResults.always +
-              mindsetResults.always +
-              lifestyleResults.always +
-              workEnvironmentResults.always,
-            score:
-              (emotionsResults.score +
-                mindsetResults.score +
-                lifestyleResults.score +
-                workEnvironmentResults.score) /
-              4,
-          };
-
-          setResults({
-            emotions: emotionsResults,
-            mindset: mindsetResults,
-            lifestyle: lifestyleResults,
-            workEnvironment: workEnvironmentResults,
-            overall,
+          const fetchedSurveys = [];
+          querySnapshot.forEach((doc) => {
+            fetchedSurveys.push({ id: doc.id, ...doc.data() });
           });
+
+          if (fetchedSurveys.length > 0) {
+            setSurveys(fetchedSurveys);
+            const latestSurvey = fetchedSurveys[fetchedSurveys.length - 1];
+
+            // Check if survey has new format (answers object)
+            if (latestSurvey.answers) {
+              const emotionsResults = calculateCategoryResultsFromAnswers(
+                latestSurvey.answers.emotionalWellbeing || []
+              );
+              const mindsetResults = calculateCategoryResultsFromAnswers(
+                latestSurvey.answers.mindsetWellbeing || []
+              );
+              const lifestyleResults = calculateCategoryResultsFromAnswers(
+                latestSurvey.answers.lifestyleBalance || []
+              );
+              const physicalResults = calculateCategoryResultsFromAnswers(
+                latestSurvey.answers.physicalWellbeing || []
+              );
+
+              const overall = {
+                never: emotionsResults.never + mindsetResults.never + lifestyleResults.never + physicalResults.never,
+                rarely: emotionsResults.rarely + mindsetResults.rarely + lifestyleResults.rarely + physicalResults.rarely,
+                often: emotionsResults.often + mindsetResults.often + lifestyleResults.often + physicalResults.often,
+                always: emotionsResults.always + mindsetResults.always + lifestyleResults.always + physicalResults.always,
+                score: (emotionsResults.score + mindsetResults.score + lifestyleResults.score + physicalResults.score) / 4,
+              };
+
+              setResults({
+                emotions: emotionsResults,
+                mindset: mindsetResults,
+                lifestyle: lifestyleResults,
+                workEnvironment: physicalResults,
+                overall,
+              });
+            } else {
+              // Legacy format: use old calculation method
+              const emotionsResults = calculateCategoryResults(latestSurvey, 1, 5);
+              const mindsetResults = calculateCategoryResults(latestSurvey, 6, 10);
+              const lifestyleResults = calculateCategoryResults(latestSurvey, 11, 15);
+              const workEnvironmentResults = calculateCategoryResults(latestSurvey, 16, 20);
+
+              const overall = {
+                never: emotionsResults.never + mindsetResults.never + lifestyleResults.never + workEnvironmentResults.never,
+                rarely: emotionsResults.rarely + mindsetResults.rarely + lifestyleResults.rarely + workEnvironmentResults.rarely,
+                often: emotionsResults.often + mindsetResults.often + lifestyleResults.often + workEnvironmentResults.often,
+                always: emotionsResults.always + mindsetResults.always + lifestyleResults.always + workEnvironmentResults.always,
+                score: (emotionsResults.score + mindsetResults.score + lifestyleResults.score + workEnvironmentResults.score) / 4,
+              };
+
+              setResults({
+                emotions: emotionsResults,
+                mindset: mindsetResults,
+                lifestyle: lifestyleResults,
+                workEnvironment: workEnvironmentResults,
+                overall,
+              });
+            }
+          }
+        } else if (!assessmentId) {
+          // No user and no assessmentId - show error
+          setError("Please log in or provide an assessment ID to view results");
         }
       } catch (error) {
         console.error("Error fetching survey results:", error.message);
+        setError(error.message || "Failed to load results");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSurveys();
-  }, []);
+    fetchResults();
+  }, [searchParams]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-white text-xl mb-4">Loading results...</div>
+        </div>
+      </div>
+    );
   }
 
-  if (!results) {
+  if (error || !results) {
     return (
-      <div className="min-h-screen  bg-gray-900 py-12">
+      <div className="min-h-screen bg-gray-900 py-12">
         <div className="container max-w-4xl mx-auto px-4 text-center">
-          <h1 className="text-3xl font-bold mb-4">No Results Found</h1>
-          <p className=" text-gray-400 mb-8">
-            You haven't completed any surveys yet. Please take a survey to view
-            your results.
+          <h1 className="text-3xl font-bold mb-4 text-white">No Results Found</h1>
+          <p className="text-gray-400 mb-8">
+            {error || "You haven't completed any surveys yet. Please take a survey to view your results."}
           </p>
           <Link href="/survey">
             <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
@@ -258,4 +369,4 @@ function ResultsPage() {
   );
 }
 
-export default withAuth(ResultsPage);
+export default ResultsPage;

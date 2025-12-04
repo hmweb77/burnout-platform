@@ -133,7 +133,7 @@ export default function PaidAssessment() {
                 whileTap={{ scale: 0.95 }}
                 className="group w-full md:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white font-semibold px-8 py-4 rounded-lg shadow-lg shadow-violet-500/25 hover:shadow-violet-500/50 transition-all duration-300"
               >
-                Get Full Assessment
+                Start Full Assessment
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
             </Link>

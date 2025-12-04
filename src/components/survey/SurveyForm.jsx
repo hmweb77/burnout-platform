@@ -15,8 +15,8 @@ const questions = {
     // { question: "I take regular breaks to stretch or move during work hours.", subtitle: "Consider the past two weeks" },
     // { question: "I rarely experience ongoing aches or physical discomfort related to work.", subtitle: "Consider the past two weeks" },
     // { question: "I drink enough water to stay well-hydrated.", subtitle: "Consider the past two weeks" },
-    { question: "I manage my screen time to prevent eye strain.", subtitle: "Consider the past two weeks" },
-    { question: "I recover well after intense physical or mental effort.", subtitle: "Consider the past two weeks" },
+    // { question: "I manage my screen time to prevent eye strain.", subtitle: "Consider the past two weeks" },
+    // { question: "I recover well after intense physical or mental effort.", subtitle: "Consider the past two weeks" },
     { question: "I schedule preventive health checkups when needed.", subtitle: "Consider the past two weeks" },
   ],
   emotionalWellbeing: [
@@ -27,8 +27,8 @@ const questions = {
     // { question: "I can shift from frustration or overwhelm into calm fairly quickly.", subtitle: "Consider the past two weeks" },
     // { question: "I find purpose and fulfillment in my work.", subtitle: "Consider the past two weeks" },
     // { question: "I maintain empathy even when under stress.", subtitle: "Consider the past two weeks" },
-    { question: "I experience moments of joy or appreciation throughout the day.", subtitle: "Consider the past two weeks" },
-    { question: "I rarely end the workday feeling emotionally drained.", subtitle: "Consider the past two weeks" },
+    // { question: "I experience moments of joy or appreciation throughout the day.", subtitle: "Consider the past two weeks" },
+    // { question: "I rarely end the workday feeling emotionally drained.", subtitle: "Consider the past two weeks" },
     { question: "I practice gratitude or reflection to maintain perspective.", subtitle: "Consider the past two weeks" },
   ],
   mindsetWellbeing: [
@@ -39,8 +39,8 @@ const questions = {
     // { question: "I adapt quickly when circumstances change.", subtitle: "Consider the past two weeks" },
     // { question: "I take time to plan and reflect on goals.", subtitle: "Consider the past two weeks" },
     // { question: "I view setbacks as opportunities to learn and grow.", subtitle: "Consider the past two weeks" },
-    { question: "I avoid perfectionism when it slows me down or increases stress.", subtitle: "Consider the past two weeks" },
-    { question: "I make decisions using both logic and intuition.", subtitle: "Consider the past two weeks" },
+    // { question: "I avoid perfectionism when it slows me down or increases stress.", subtitle: "Consider the past two weeks" },
+    // { question: "I make decisions using both logic and intuition.", subtitle: "Consider the past two weeks" },
     { question: "I choose perspectives that reduce stress and improve clarity.", subtitle: "Consider the past two weeks" },
   ],
   lifestyleBalance: [
@@ -51,8 +51,8 @@ const questions = {
     // { question: "I take breaks or vacations without constantly checking work.", subtitle: "Consider the past two weeks" },
     // { question: "I limit exposure to negative or draining media.", subtitle: "Consider the past two weeks" },
     // { question: "I invest in personal growth beyond work.", subtitle: "Consider the past two weeks" },
-    { question: "I maintain financial habits that reduce money stress.", subtitle: "Consider the past two weeks" },
-    { question: "I have daily routines that help me start and end my day well.", subtitle: "Consider the past two weeks" },
+    // { question: "I maintain financial habits that reduce money stress.", subtitle: "Consider the past two weeks" },
+    // { question: "I have daily routines that help me start and end my day well.", subtitle: "Consider the past two weeks" },
     { question: "I get enough downtime each week to fully recharge.", subtitle: "Consider the past two weeks" },
   ],
 };
@@ -233,7 +233,7 @@ export default function SurveyForm({ onSurveySubmit, onProgressChange }) {
                         : "bg-gray-800 text-gray-500 cursor-not-allowed"
                     }`}
                   >
-                    Submit Survey
+                    Submit Survey and pay
                   </button>
                 ) : (
                   <button
