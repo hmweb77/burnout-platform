@@ -8,6 +8,13 @@
 # testing
 /coverage
 
+FIRESTORE_MODELS.md
+IMPLEMENTATION_SUMMARY.md
+QUICK_START.md
+TESTING_GUIDE.md
+ENV_SETUP.md
+
+
 # next.js
 /.next/
 /out/
