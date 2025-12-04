@@ -102,6 +102,7 @@ export async function POST(request) {
       (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
     // Create Stripe Checkout session
+    // Note: customer_email is optional - Stripe will collect it if not provided
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -111,7 +112,7 @@ export async function POST(request) {
         },
       ],
       mode: "payment",
-      customer_email: email || assessmentData.email || undefined,
+      customer_email: email || assessmentData.email || undefined, // Pre-fill if available
       success_url: `${baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}&assessment_id=${assessmentId}`,
       cancel_url: `${baseUrl}/checkout?assessmentId=${assessmentId}`,
       metadata: {
@@ -119,6 +120,8 @@ export async function POST(request) {
         email: email || assessmentData.email || "",
       },
       allow_promotion_codes: true,
+      // Ensure email is collected
+      billing_address_collection: "required",
     });
 
     console.log("✅ Checkout session created:", session.id);

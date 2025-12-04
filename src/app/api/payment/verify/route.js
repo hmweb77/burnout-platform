@@ -67,29 +67,9 @@ export async function GET(request) {
       );
     }
 
-    // Get or create Firebase user
-    let user;
-    try {
-      user = await adminAuth.getUserByEmail(customerEmail);
-    } catch (error) {
-      if (error.code === "auth/user-not-found") {
-        // User should have been created by webhook, but create if missing
-        user = await adminAuth.createUser({
-          email: customerEmail,
-          emailVerified: true,
-        });
-      } else {
-        throw error;
-      }
-    }
-
-    // Generate custom token for client-side sign-in
-    const customToken = await adminAuth.createCustomToken(user.uid);
-
+    // Just return email - account creation happens on payment-success page
     return NextResponse.json({
       success: true,
-      customToken,
-      userId: user.uid,
       email: customerEmail,
       assessmentId: session.metadata?.assessmentId || null,
     });

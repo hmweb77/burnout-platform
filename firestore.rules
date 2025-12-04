@@ -9,9 +9,16 @@ service cloud.firestore {
       match /surveys/{surveyId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
+      
+      // Allow users to read their own assessments subcollection
+      // Write is handled server-side via Admin SDK
+      match /assessments/{assessmentId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false; // Server-side only
+      }
     }
     
-    // Assessments collection - server-side writes only via Admin SDK
+    // Main assessments collection - server-side writes only via Admin SDK
     // Client can only read their own assessments
     match /assessments/{assessmentId} {
       // Only allow reads for authenticated users who own the assessment
