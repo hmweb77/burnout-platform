@@ -1,42 +1,54 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Calendar, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-
-// Sample articles data - you can replace this with actual data from an API or JSON file
-const articles = [
-  {
-    id: 1,
-    title: "Understanding the Signs of Burnout",
-    excerpt: "Learn to recognize the early warning signs of burnout before it becomes overwhelming. This comprehensive guide covers physical, emotional, and mental indicators.",
-    category: "Wellness",
-    date: "2024-01-15",
-    readTime: "5 min read",
-    image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&h=400&fit=crop",
-  },
-  {
-    id: 2,
-    title: "Building Resilience: A Practical Guide",
-    excerpt: "Discover proven strategies to build emotional resilience and bounce back from stress. Practical tips you can implement in your daily life.",
-    category: "Mindset",
-    date: "2024-01-10",
-    readTime: "7 min read",
-    image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=400&fit=crop",
-  },
-  {
-    id: 3,
-    title: "Work-Life Balance in the Digital Age",
-    excerpt: "Explore how to maintain healthy boundaries between work and personal life in our always-connected world. Real strategies for modern professionals.",
-    category: "Lifestyle",
-    date: "2024-01-05",
-    readTime: "6 min read",
-    image: "https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800&h=400&fit=crop",
-  },
-];
+import { sanityClient } from "@/lib/sanity";
 
 export default function Articles() {
+  const [articles, setArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch blogs from Sanity
+  useEffect(() => {
+    async function fetchBlogs() {
+      try {
+        const blogs = await sanityClient.fetch(
+          `*[_type == "blog"] | order(publishedAt desc) {
+            _id,
+            title,
+            description,
+            "image": coverImage.asset->url,
+            "slug": slug.current,
+            publishedAt
+          }`
+        );
+
+        // Map Sanity fields to match component expectations
+        const mappedArticles = blogs.map((blog) => ({
+          id: blog._id,
+          title: blog.title || "",
+          excerpt: blog.description || "",
+          category: "Article", // Default category as it doesn't exist in schema
+          date: blog.publishedAt || new Date().toISOString(),
+          readTime: "5 min read", // Default read time as it's not in schema
+          image: blog.image || "",
+          slug: blog.slug || "",
+        }));
+
+        setArticles(mappedArticles);
+      } catch (error) {
+        console.error("Error fetching blogs from Sanity:", error);
+        setArticles([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchBlogs();
+  }, []);
   return (
     <section className="py-20 bg-gray-800">
       <div className="container max-w-6xl mx-auto px-4">
@@ -57,8 +69,11 @@ export default function Articles() {
         </motion.div>
 
         {/* Articles Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map((article, index) => (
+        {isLoading ? (
+          <div className="text-center text-gray-400 py-12">Loading articles...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {articles.map((article, index) => (
             <motion.div
               key={article.id}
               initial={{ opacity: 0, y: 20 }}
@@ -103,7 +118,7 @@ export default function Articles() {
                 </p>
 
                 <Link
-                  href="#"
+                  href={article.slug ? `/blog/${article.slug}` : "#"}
                   className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors"
                 >
                   Read More
@@ -111,8 +126,9 @@ export default function Articles() {
                 </Link>
               </div>
             </motion.div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* View All Link */}
         <motion.div

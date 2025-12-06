@@ -1,17 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import ResourceDownloadCard from "@/components/resources/ResourceDownloadCard";
 import EmailFormModal from "@/components/resources/EmailFormModal";
-import resourcesData from "@/data/resources.json";
+import { sanityClient } from "@/lib/sanity";
 
 export default function FreeResources() {
   const [selectedResource, setSelectedResource] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ebooks, setEbooks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Filter only ebooks
-  const ebooks = resourcesData.filter((resource) => resource.type === "ebook");
+  // Fetch resources from Sanity
+  useEffect(() => {
+    async function fetchResources() {
+      try {
+        const resources = await sanityClient.fetch(
+          `*[_type == "resource"] {
+            _id,
+            name,
+            price,
+            description,
+            "image": image.asset->url,
+            "file": pdfFile.asset->url
+          }`
+        );
+
+        // Map Sanity fields to match component expectations
+        const mappedResources = resources.map((resource) => ({
+          id: resource._id,
+          type: "ebook", // Default to ebook as the component filters for ebooks
+          title: resource.name,
+          file: resource.file,
+          price: resource.price,
+          description: resource.description,
+          image: resource.image,
+        }));
+
+        setEbooks(mappedResources);
+      } catch (error) {
+        console.error("Error fetching resources from Sanity:", error);
+        setEbooks([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchResources();
+  }, []);
 
   const handleGetResource = (resource) => {
     setSelectedResource(resource);
@@ -23,6 +60,7 @@ export default function FreeResources() {
     setSelectedResource(null);
   };
 
+  if (isLoading) return null;
   if (ebooks.length === 0) return null;
 
   return (
