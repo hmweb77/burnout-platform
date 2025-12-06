@@ -65,21 +65,15 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Login/Logout Button */}
+        {/* Logout Button */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          {user ? (
+          {user && (
             <button
               onClick={handleLogout}
               className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
             >
               Logout
             </button>
-          ) : (
-            <Link href="/login">
-              <button className="bg-violet-500 text-white px-4 py-2 rounded-lg hover:bg-violet-600 transition">
-                Login
-              </button>
-            </Link>
           )}
         </div>
 
@@ -116,7 +110,7 @@ export default function Navbar() {
                 {link.name}
               </Link>
             ))}
-            {user ? (
+            {user && (
               <button
                 onClick={() => {
                   handleLogout();
@@ -126,15 +120,6 @@ export default function Navbar() {
               >
                 Logout
               </button>
-            ) : (
-              <Link href="/login">
-                <button
-                  className="bg-violet-500 text-white px-4 py-2 rounded-lg hover:bg-violet-600 transition"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Login
-                </button>
-              </Link>
             )}
           </nav>
         </div>

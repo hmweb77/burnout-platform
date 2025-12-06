@@ -67,14 +67,6 @@ export default function LoginPage() {
               Login
             </button>
           </form>
-          <Link href="/signup">
-            <button
-              size="lg"
-              className="bg-gradient-to-r mt-8 p-2 from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/50 transition-all duration-300 w-full rounded-lg"
-            >
-              Sign Up
-            </button>
-          </Link>
         </div>
       </motion.div>
     </div>

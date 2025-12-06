@@ -6,6 +6,12 @@ import Link from "next/link";
 import { Brain } from "lucide-react";
 
 export default function HeroSection() {
+
+  const handelScroll = () => {
+    const section = document.getElementById("free-resources");
+    section?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center">
       {/* Background Image with Overlay */}
@@ -45,21 +51,22 @@ export default function HeroSection() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/survey">
+              {/* <Link href="/survey"> */}
                 <button
+                onClick={handelScroll}
                  size="lg"
                   className=" flex items-center p-2 border border-gradient-to-r from-blue-500 to-violet-900 hover:from-blue-600 hover:to-violet-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/50 transition-all duration-300 w-full rounded-lg sm:w-auto"
                 >
                   Free Resources
                   <Brain className="ml-2 h-5 w-5" />
                 </button>
-              </Link>
+              {/* </Link> */}
               <Link href="/survey">
                 <button
-                 size="lg"
+                  size="lg"
                   className=" flex items-center bg-gradient-to-r p-2 from-blue-500 to-violet-500 hover:from-blue-600 hover:to-violet-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/50 transition-all duration-300 w-full rounded-lg sm:w-auto"
                 >
-                  Free Assessment
+                  Full Assessment
                   <Brain className="ml-2 h-5 w-5" />
                 </button>
               </Link>

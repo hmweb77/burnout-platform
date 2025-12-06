@@ -64,7 +64,7 @@ export default function FreeResources() {
   if (ebooks.length === 0) return null;
 
   return (
-    <section className="py-20 bg-gray-900">
+    <section className="py-20 bg-gray-900" id="free-resources">
       <div className="container max-w-6xl mx-auto px-4">
         {/* Header */}
         <motion.div

@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import * as brevo from "@getbrevo/brevo";
-import fs from "fs";
-import path from "path";
-import resourcesData from "@/data/resources.json";
+import { sanityClient } from "@/lib/sanity";
 
 // Helper function to initialize Brevo API client
 function getBrevoApiInstance() {
@@ -57,24 +55,85 @@ export async function POST(request) {
       );
     }
 
-    // Locate resource in resources.json
-    // Handle both string and number IDs
-    const resource = resourcesData.find((r) => r.id === resourceId || r.id === String(resourceId) || r.id === Number(resourceId));
+    // Fetch resource from Sanity using ID
+    // First try the user's exact query format (in case schema has title/file fields)
+    let resource = await sanityClient.fetch(
+      `*[_type == "resource" && _id == $id][0]{
+        title,
+        description,
+        "fileUrl": file.asset->url
+      }`,
+      { id: resourceId }
+    );
+
+    // If that didn't work or returned null fields, try with actual schema field names
+    if (!resource || !resource.title || !resource.fileUrl) {
+      resource = await sanityClient.fetch(
+        `*[_type == "resource" && _id == $id][0]{
+          "title": name,
+          description,
+          "fileUrl": pdfFile.asset->url
+        }`,
+        { id: resourceId }
+      );
+    }
+
+    // Also try with different ID formats (Sanity IDs can vary)
+    if (!resource || !resource.title || !resource.fileUrl) {
+      // Try with 'resource-' prefix
+      const prefixedId = resourceId.startsWith('resource-') ? resourceId : `resource-${resourceId}`;
+      resource = await sanityClient.fetch(
+        `*[_type == "resource" && _id == $id][0]{
+          "title": name,
+          description,
+          "fileUrl": pdfFile.asset->url
+        }`,
+        { id: prefixedId }
+      );
+    }
 
     if (!resource) {
-      console.error("Resource not found for ID:", resourceId, "Available IDs:", resourcesData.map(r => r.id));
+      console.error("Resource not found for ID:", resourceId);
       return NextResponse.json(
-        { error: "Resource not found", resourceId },
+        { 
+          error: "Resource not found", 
+          resourceId,
+          message: "Please check that the resource ID is correct and the resource exists in Sanity."
+        },
         { status: 404 }
       );
     }
 
-    // Prepare email content
-    const resourceUrl = resource.file
-      ? `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}${resource.file}`
-      : resource.link;
+    // Validate that all required fields are present
+    const missingFields = [];
+    if (!resource.title) missingFields.push("title");
+    if (!resource.description) missingFields.push("description");
+    if (!resource.fileUrl) missingFields.push("fileUrl");
 
-    const emailSubject = `Your Resource: ${resource.title}`;
+    if (missingFields.length > 0) {
+      console.error("Resource missing required fields:", missingFields, resource);
+      return NextResponse.json(
+        { 
+          error: "Resource data incomplete",
+          missingFields,
+          message: `The resource is missing the following required fields: ${missingFields.join(", ")}. Please ensure all fields are filled in Sanity.`
+        },
+        { status: 400 }
+      );
+    }
+
+    console.log("Fetched resource successfully:", { 
+      title: resource.title, 
+      hasDescription: !!resource.description,
+      hasFileUrl: !!resource.fileUrl 
+    });
+
+    // Prepare email content - all fields are validated above
+    const resourceUrl = resource.fileUrl;
+    const resourceTitle = resource.title;
+    const resourceDescription = resource.description;
+
+    const emailSubject = `Your Resource: ${resourceTitle}`;
     const emailContent = `
       <!DOCTYPE html>
       <html>
@@ -127,12 +186,13 @@ export async function POST(request) {
             </div>
             <div class="content">
               <p>Hello,</p>
-              <p>Thank you for requesting <strong>${resource.title}</strong>.</p>
+              <p>Thank you for requesting <strong>${resourceTitle}</strong>.</p>
+              <p>${resourceDescription}</p>
               <p>You can access your resource using the link below:</p>
               <p style="text-align: center;">
-                <a href="${resourceUrl}" class="button">Access Resource</a>
+                <a href="${resourceUrl}" class="button" target="_blank">Download Resource</a>
               </p>
-              ${resource.file ? `<p><strong>Note:</strong> This is a downloadable file. Click the button above to download it.</p>` : ""}
+              <p><strong>Note:</strong> This is a downloadable file. Click the button above to download it.</p>
               <p>If you have any questions, feel free to reach out to us.</p>
               <p>Best regards,<br>Burnout Platform Team</p>
             </div>
@@ -154,28 +214,8 @@ export async function POST(request) {
     };
     sendSmtpEmail.to = [{ email }];
 
-    // If resource has a file, attach it (optional - you can also just send the link)
-    if (resource.file) {
-      try {
-        // Read file from public directory
-        const filePath = path.join(process.cwd(), "public", resource.file);
-        
-        if (fs.existsSync(filePath)) {
-          const fileContent = fs.readFileSync(filePath);
-          const fileName = path.basename(resource.file);
-          
-          sendSmtpEmail.attachment = [
-            {
-              name: fileName,
-              content: fileContent.toString("base64"),
-            },
-          ];
-        }
-      } catch (fileError) {
-        console.error("Error reading file:", fileError);
-        // Continue without attachment - the link in email will work
-      }
-    }
+    // Note: File attachment removed since we're using Sanity file URLs
+    // The fileUrl from Sanity can be accessed directly via the link in the email
 
     // Send email using Brevo
     const apiInstance = getBrevoApiInstance();
@@ -227,8 +267,7 @@ export async function POST(request) {
       await addDoc(collection(db, "resourceRequests"), {
         email,
         resourceId,
-        resourceTitle: resource.title,
-        resourceType: resource.type,
+        resourceTitle: resourceTitle,
         requestedAt: serverTimestamp(),
         emailSent: true,
         brevoMessageId: emailResult?.messageId || null,
